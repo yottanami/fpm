@@ -607,6 +607,9 @@ class FPM::Package::Deb < FPM::Package
     #   - upstream changelog, which should be archived as changelog.gz
     # see https://www.debian.org/doc/debian-policy/ch-docs.html#s-changelogs
 
+    # Used by the changelog template below and by the .changes file.
+    distribution = self.attributes[:deb_dist]
+
     # Write the changelog.Debian.gz file
     dest_changelog = File.join(staging_path, "usr/share/doc/#{name}/changelog.Debian.gz")
     mkdir_p(File.dirname(dest_changelog))
@@ -747,8 +750,6 @@ class FPM::Package::Deb < FPM::Package
 
     # if a PACKAGENAME.changes file is to be created
     if self.attributes[:deb_generate_changes?]
-      distribution = self.attributes[:deb_dist]
-
       # gather information about the files to distribute
       files = [ output_path ]
       changes_files = []

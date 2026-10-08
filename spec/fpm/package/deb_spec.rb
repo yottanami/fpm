@@ -287,6 +287,13 @@ describe FPM::Package::Deb do
         insist { dpkg_field("Package") } == original.name
       end
 
+      it "should have the distribution in the generated changelog (#2126)" do
+        # Without an upstream changelog, the Debian changelog is installed as changelog.gz
+        changelog = `dpkg-deb --fsys-tarfile #{target} | tar -xO ./usr/share/doc/#{original.name}/changelog.gz | gunzip`
+        # "unstable" is the --deb-dist default
+        insist { changelog.lines.first } =~ /\) unstable; urgency=medium$/
+      end
+
       it "should have the correct 'epoch:version-iteration'" do
         insist { dpkg_field("Version") } == original.to_s("EPOCH:VERSION-ITERATION")
       end
